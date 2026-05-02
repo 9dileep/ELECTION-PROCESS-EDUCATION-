@@ -11,11 +11,11 @@ const CONFIG = {
     // 5. Web Speech API (FREE – built into browsers!)
     // Optional: Firebase – Get from https://console.firebase.google.com
     FIREBASE: {
-        apiKey: "AIzaSyCzqyWuZWFLkiRvqlCZqpoQE28VA_82I4U",
-        authDomain: "election-e7597.firebaseapp.com",
-        projectId: "election-e7597",
-        storageBucket: "election-e7597.firebasestorage.app",
-        messagingSenderId: "451653308265",
-        appId: "1:451653308265:web:3488f07cc1c28d4e91f7f8"
+        apiKey: "YOUR_FIREBASE_API_KEY",
+        authDomain: "YOUR_PROJECT.firebaseapp.com",
+        projectId: "YOUR_PROJECT_ID",
+        storageBucket: "YOUR_PROJECT.firebasestorage.app",
+        messagingSenderId: "YOUR_SENDER_ID",
+        appId: "YOUR_APP_ID"
     }
 };
