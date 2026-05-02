@@ -4,6 +4,7 @@ npm-debug.log*
 
 # Environment variables (SECURITY: DO NOT REMOVE)
 .env
+js/config.js
 .env.local
 .env.development
 .env.production
