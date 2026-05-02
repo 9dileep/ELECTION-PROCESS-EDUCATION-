@@ -70,6 +70,19 @@ app.post('/api/chat', async (req, res) => {
   }
 });
 
+// Friendly message for accidental GET requests to the API
+app.get('/api/chat', (req, res) => {
+  res.send(`
+    <html>
+      <body style="font-family: sans-serif; text-align: center; margin-top: 50px;">
+        <h2>🤖 ElectED API is running!</h2>
+        <p>This endpoint only accepts POST requests.</p>
+        <p>Please go to the <a href="/assistant.html">Ask AI Assistant page</a> to chat.</p>
+      </body>
+    </html>
+  `);
+});
+
 // Catch-all 404 handler
 app.use((req, res) => {
   console.warn(`⚠️  404 Not Found: ${req.method} ${req.url}`);
