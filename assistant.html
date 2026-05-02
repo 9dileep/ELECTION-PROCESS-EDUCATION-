@@ -307,6 +307,7 @@
     }
 
     function removeEl(id) { const el = document.getElementById(id); if (el) el.remove(); }
+    function removeTyping(id) { removeEl(id); }
     function clearChat() {
       document.getElementById('chat-msgs').innerHTML = `<div class="chat-msg"><div class="msg-av">🤖</div><div class="msg-bub">Chat cleared. Ask me anything about elections!</div></div>`;
       lastBotMsg = '';

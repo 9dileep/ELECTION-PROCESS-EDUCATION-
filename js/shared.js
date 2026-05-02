@@ -43,7 +43,7 @@ function showToast(msg, type = 'info', duration = 3000) {
 let firebaseApp = null, db = null, auth = null, currentUser = null;
 
 function initFirebase() {
-  if (typeof firebase === 'undefined' || !CONFIG.FIREBASE.apiKey || CONFIG.FIREBASE.apiKey === 'YOUR_FIREBASE_API_KEY') return;
+  if (typeof firebase === 'undefined' || typeof CONFIG === 'undefined' || !CONFIG.FIREBASE.apiKey || CONFIG.FIREBASE.apiKey === 'YOUR_FIREBASE_API_KEY') return;
   try {
     firebaseApp = firebase.initializeApp(CONFIG.FIREBASE);
     auth = firebase.auth();
