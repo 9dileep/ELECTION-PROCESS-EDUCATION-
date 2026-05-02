@@ -5,6 +5,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>AI Election Assistant – ElectED</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🗳️</text></svg>" />
   <link rel="stylesheet" href="css/fonts.css" />
   <link rel="stylesheet" href="css/shared.css" />
 </head>
@@ -164,18 +165,14 @@
       const urlQ = new URLSearchParams(location.search).get('q');
       if (urlQ) { document.getElementById('chat-input').value = urlQ; setTimeout(sendChat, 500); }
 
-      // API notice
-      if (!CONFIG.GEMINI_API_KEY || CONFIG.GEMINI_API_KEY === 'YOUR_GEMINI_API_KEY' || CONFIG.GEMINI_API_KEY.length < 10) {
-        document.getElementById('api-notice').style.display = 'block';
-      } else {
-        document.getElementById('api-notice').style.display = 'none';
-      }
+      // API notice – hidden since key is managed server-side
+      document.getElementById('api-notice').style.display = 'none';
 
       // Enter key
       document.getElementById('chat-input').addEventListener('keydown', e => { if (e.key === 'Enter') sendChat(); });
 
-      // Gemini toggle
-      document.getElementById('gemini-toggle').checked = CONFIG.GEMINI_API_KEY && CONFIG.GEMINI_API_KEY !== 'YOUR_GEMINI_API_KEY';
+      // Gemini toggle on by default (server handles the key)
+      document.getElementById('gemini-toggle').checked = true;
     });
 
     // ===== SEND CHAT =====
@@ -186,7 +183,7 @@
       input.value = '';
       appendMsg(text, 'user');
       const typId = appendTyping();
-      const useGemini = document.getElementById('gemini-toggle').checked && CONFIG.GEMINI_API_KEY && CONFIG.GEMINI_API_KEY !== 'YOUR_GEMINI_API_KEY';
+      const useGemini = document.getElementById('gemini-toggle').checked;
       let reply;
       if (useGemini) reply = await callGemini(text);
       else reply = getLocalAnswer(text);
@@ -199,25 +196,25 @@
       if (document.getElementById('tts-toggle').checked) speakText(reply);
     }
 
-    // ===== GEMINI API =====
+    // ===== GEMINI API (via secure server proxy) =====
     async function callGemini(question) {
       try {
-        const systemPrompt = "You are ElectED, an expert election education assistant. Answer questions about the U.S. election process clearly and accurately. Keep answers concise (under 200 words), friendly, and educational. Use bullet points or numbered lists when helpful.";
-        const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${CONFIG.GEMINI_API_KEY}`;
-
-        const res = await fetch(url, {
+        const res = await fetch('/api/chat', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            contents: [{ parts: [{ text: `${systemPrompt}\n\nUser question: ${question}` }] }]
-          })
+          body: JSON.stringify({ question })
         });
 
         if (res.ok) {
           const data = await res.json();
-          return data.candidates?.[0]?.content?.parts?.[0]?.text || 'No response content.';
+          return data.reply || 'No response content.';
         }
-      } catch (e) { }
+
+        // If server returns error, fall back to local KB
+        console.warn('API chat error:', res.status);
+      } catch (e) {
+        console.warn('Network error calling /api/chat:', e.message);
+      }
 
       showToast('AI request failed. Using local knowledge.', 'error');
       return getLocalAnswer(question);

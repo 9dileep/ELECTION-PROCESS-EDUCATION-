@@ -63,8 +63,15 @@ app.post('/api/chat', async (req, res) => {
   }
 });
 
+// Catch-all 404 handler — logs the exact missing file path
+app.use((req, res) => {
+  console.warn(`⚠️  404 Not Found: ${req.method} ${req.url}`);
+  res.status(404).send(`404 – File not found: ${req.url}`);
+});
+
 // Start the server
 app.listen(PORT, () => {
   console.log(`🚀 ElectED Server running on http://localhost:${PORT}`);
   console.log(`🔒 Gemini API Proxy active at /api/chat`);
+  console.log(`🔑 Gemini API Key: ${process.env.GEMINI_API_KEY ? '✅ Loaded' : '❌ MISSING – set GEMINI_API_KEY env var'}`);
 });
