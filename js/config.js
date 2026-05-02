@@ -3,7 +3,7 @@
 // =============================================
 const CONFIG = {
     // 1. Gemini API - Temporarily moved to frontend to work with static server
-    GEMINI_API_KEY: 'AIzaSyCCIKSHm7tt0emsLEBDryaPOUTC4AOjDzc',
+    
 
     // 2. Map uses OpenStreetMap (FREE – no key needed!)
     // 3. Google Calendar (FREE – no key needed!)
