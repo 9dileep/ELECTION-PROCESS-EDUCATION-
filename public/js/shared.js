@@ -1,3 +1,4 @@
+"use strict";
 // ===== PARTICLES =====
 function initParticles() {
   const c = document.getElementById('particles');

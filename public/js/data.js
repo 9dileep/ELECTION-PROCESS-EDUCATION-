@@ -1,3 +1,4 @@
+"use strict";
 // ===== TIMELINE DATA =====
 const TIMELINE_DATA = [
   { id:1, icon:'📢', phase:'Pre-Election', filter:'pre', title:'Candidate Announcement', time:'18-24 months before', calDate:'20250201', desc:'Candidates formally announce their intention to run for office.', expand:'Candidates file with the Federal Election Commission (FEC), begin fundraising, and build campaign teams. Early announcements help establish name recognition and donor networks.' },

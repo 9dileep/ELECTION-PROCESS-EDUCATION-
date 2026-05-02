@@ -20,10 +20,11 @@
       <li><a href="assistant.html" class="nav-link">Ask AI</a></li>
     </ul>
     <div class="nav-auth" id="auth-area"></div>
-    <button class="hamburger" id="hamburger"><span></span><span></span><span></span></button>
+    <button class="hamburger" id="hamburger" aria-label="Toggle navigation"><span></span><span></span><span></span></button>
   </div>
 </nav>
 
+<main>
 <div class="page-hero">
   <div class="page-tag">How It Works</div>
   <h1 class="page-title">How to <span class="gradient-text">Participate</span></h1>
@@ -53,7 +54,7 @@
         </div>
       </div>
       <div class="maps-input-row">
-        <input id="maps-query" class="maps-input" placeholder="Enter your city, state or ZIP code..." type="text"/>
+        <input id="maps-query" class="maps-input" placeholder="Enter your city, state or ZIP code..." type="text" aria-label="Search polling places"/>
         <button class="btn btn-primary" onclick="searchPollingPlace()">🔍 Find Polling Places</button>
         <button class="btn btn-secondary" onclick="useMyLocation()">📍 Use My Location</button>
       </div>
@@ -70,6 +71,7 @@
   </div>
 </section>
 
+</main>
 <footer class="footer">
   <div class="footer-grid">
     <div class="footer-brand">

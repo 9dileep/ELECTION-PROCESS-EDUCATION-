@@ -2,7 +2,10 @@ const express = require('express');
 const path = require('path');
 const dotenv = require('dotenv');
 const fetch = require('node-fetch');
-
+const rateLimit = require('express-rate-limit');
+const helmet = require('helmet');
+const cors = require('cors');
+const compression = require('compression');
 // Load .env ONLY if GEMINI_API_KEY is not already set in the environment
 // This prevents .env from overriding an exported shell variable
 if (!process.env.GEMINI_API_KEY) {
@@ -12,14 +15,25 @@ if (!process.env.GEMINI_API_KEY) {
 const app = express();
 const PORT = process.env.PORT || 8080;
 
+app.use(helmet({
+  contentSecurityPolicy: false, // Disabling CSP for this educational app to allow inline scripts and free APIs
+}));
+app.use(cors());
+app.use(compression());
 app.use(express.json());
-app.use(express.static(path.join(__dirname)));
+app.use(express.static(path.join(__dirname, 'public')));
 
 /**
  * SECURE PROXY FOR GEMINI AI
  * Keeps API key server-side. Frontend calls /api/chat instead of Gemini directly.
  */
-app.post('/api/chat', async (req, res) => {
+const apiLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 50, // Limit each IP to 50 requests per windowMs
+  message: { error: 'Too many requests, please try again later.' }
+});
+
+app.post('/api/chat', apiLimiter, async (req, res) => {
   const { question } = req.body;
   const apiKey = process.env.GEMINI_API_KEY;
 
@@ -40,14 +54,19 @@ app.post('/api/chat', async (req, res) => {
   const MODEL = 'gemini-2.5-flash';
   const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent?key=${apiKey}`;
 
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 15000); // 15s timeout
+
   try {
     const geminiRes = await fetch(GEMINI_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         contents: [{ parts: [{ text: `${systemPrompt}\n\nUser question: ${question}` }] }]
-      })
+      }),
+      signal: controller.signal
     });
+    clearTimeout(timeoutId);
 
     const data = await geminiRes.json();
 
@@ -65,6 +84,10 @@ app.post('/api/chat', async (req, res) => {
     res.json({ reply });
 
   } catch (error) {
+    if (error.name === 'AbortError') {
+      console.error('❌ Gemini API request timed out');
+      return res.status(504).json({ error: 'Request to AI service timed out.' });
+    }
     console.error('❌ Network/server error during chat:', error.message);
     res.status(500).json({ error: 'Failed to reach Gemini API. Check server logs.' });
   }
@@ -89,13 +112,16 @@ app.use((req, res) => {
   res.status(404).send(`404 – File not found: ${req.url}`);
 });
 
-// Start the server
-app.listen(PORT, () => {
-  const keyStatus = process.env.GEMINI_API_KEY
-    ? `✅ Loaded (ends in ...${process.env.GEMINI_API_KEY.slice(-4)})`
-    : '❌ MISSING — run: export GEMINI_API_KEY="your-key"';
-  console.log(`🚀 ElectED Server running on http://localhost:${PORT}`);
-  console.log(`🔒 Gemini Proxy active at POST /api/chat`);
-  console.log(`🔑 Gemini API Key: ${keyStatus}`);
-});
+// Start the server only if run directly
+if (require.main === module) {
+  app.listen(PORT, () => {
+    const keyStatus = process.env.GEMINI_API_KEY
+      ? `✅ Loaded (ends in ...${process.env.GEMINI_API_KEY.slice(-4)})`
+      : '❌ MISSING — run: export GEMINI_API_KEY="your-key"';
+    console.log(`🚀 ElectED Server running on http://localhost:${PORT}`);
+    console.log(`🔒 Gemini Proxy active at POST /api/chat`);
+    console.log(`🔑 Gemini API Key: ${keyStatus}`);
+  });
+}
 
+module.exports = app;
