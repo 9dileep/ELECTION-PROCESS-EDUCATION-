@@ -70,20 +70,25 @@ function renderQ() {
   const q = QUIZ_DATA[qi];
   const pct = (qi / QUIZ_DATA.length) * 100;
   document.getElementById('quiz-wrap').innerHTML = `
-    <div class="quiz-progress-row">
+    <div class="quiz-progress-row" role="status" aria-label="Quiz progress: question ${qi+1} of ${QUIZ_DATA.length}, current score ${qs}">
       <span class="quiz-progress-text">Question ${qi+1} of ${QUIZ_DATA.length}</span>
-      <div class="quiz-bar"><div class="quiz-fill" style="width:${pct}%"></div></div>
+      <div class="quiz-bar" role="progressbar" aria-valuenow="${pct}" aria-valuemin="0" aria-valuemax="100" aria-label="${Math.round(pct)}% complete">
+        <div class="quiz-fill" style="width:${pct}%"></div>
+      </div>
       <span class="quiz-progress-text">Score: ${qs}</span>
     </div>
     <div class="quiz-card">
-      <div class="quiz-q">❓ ${q.q}</div>
-      <div class="quiz-options">
-        ${q.options.map((o,i) => `<button class="quiz-opt" id="qo-${i}" onclick="answer(${i})">
-          <span class="opt-letter">${['A','B','C','D'][i]}</span>${o}
+      <div class="quiz-q" id="quiz-question-label">❓ ${q.q}</div>
+      <div class="quiz-options" role="group" aria-labelledby="quiz-question-label">
+        ${q.options.map((o,i) => `<button class="quiz-opt" id="qo-${i}" onclick="answer(${i})"
+          aria-label="Option ${['A','B','C','D'][i]}: ${o}">
+          <span class="opt-letter" aria-hidden="true">${['A','B','C','D'][i]}</span>${o}
         </button>`).join('')}
       </div>
-      <div id="quiz-fb"></div>
-      <div class="quiz-next" id="quiz-next"><button class="btn btn-primary" onclick="nextQ()">Next Question →</button></div>
+      <div id="quiz-fb" role="alert" aria-live="assertive"></div>
+      <div class="quiz-next" id="quiz-next" style="display:none">
+        <button class="btn btn-primary" onclick="nextQ()" aria-label="Go to next question">Next Question →</button>
+      </div>
     </div>`;
   answered = false;
 }

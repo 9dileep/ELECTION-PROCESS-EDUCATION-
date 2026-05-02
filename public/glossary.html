@@ -51,14 +51,14 @@
       </select>
     </div>
     <!-- Category filters -->
-    <div class="filter-row" style="margin-bottom:36px">
-      <button class="filter-btn active" data-cat="all">All</button>
-      <button class="filter-btn" data-cat="voting">🗳️ Voting</button>
-      <button class="filter-btn" data-cat="process">⚙️ Process</button>
-      <button class="filter-btn" data-cat="system">🏛️ System</button>
-      <button class="filter-btn" data-cat="candidates">🎙️ Candidates</button>
+    <div class="filter-row" role="group" aria-label="Filter glossary by category" style="margin-bottom:36px">
+      <button class="filter-btn active" data-cat="all" aria-pressed="true">All</button>
+      <button class="filter-btn" data-cat="voting" aria-pressed="false">🗳️ Voting</button>
+      <button class="filter-btn" data-cat="process" aria-pressed="false">⚙️ Process</button>
+      <button class="filter-btn" data-cat="system" aria-pressed="false">🏛️ System</button>
+      <button class="filter-btn" data-cat="candidates" aria-pressed="false">🎙️ Candidates</button>
     </div>
-    <div class="glossary-grid" id="g-grid"></div>
+    <div class="glossary-grid" id="g-grid" role="region" aria-live="polite" aria-label="Glossary terms"></div>
   </div>
 </section>
 
@@ -93,8 +93,12 @@ document.addEventListener('DOMContentLoaded', () => {
   renderGlossary();
   document.querySelectorAll('[data-cat]').forEach(btn => {
     btn.addEventListener('click', () => {
-      document.querySelectorAll('[data-cat]').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('[data-cat]').forEach(b => {
+        b.classList.remove('active');
+        b.setAttribute('aria-pressed', 'false');
+      });
       btn.classList.add('active');
+      btn.setAttribute('aria-pressed', 'true');
       activeCat = btn.dataset.cat;
       renderGlossary();
     });

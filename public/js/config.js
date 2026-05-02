@@ -1,12 +1,15 @@
 "use strict";
 // =============================================
-//  ElectED – API Configuration
+//  ElectED – Client-Side Configuration
+//  NOTE: The Gemini API key is managed SERVER-SIDE
+//  via environment variables (.env) and accessed
+//  through the secure /api/chat proxy endpoint.
+//  NEVER put secret keys in client-side code.
 // =============================================
 const CONFIG = {
-    // 1. Gemini API - Temporarily moved to frontend to work with static server
-    GEMINI_API_KEY: 'AIzaSyDbPIwU0NlHCKWmHdyUgSotH6N6u4YrYZc',
+    // Gemini is accessed via server proxy — no key needed here.
 
-    // 2. Map uses OpenStreetMap (FREE – no key needed!)
+    // 2. Map uses Google Maps Free Embed (no API key needed!)
     // 3. Google Calendar (FREE – no key needed!)
     // 4. Google Translate (FREE – no key needed!)
     // 5. Web Speech API (FREE – built into browsers!)

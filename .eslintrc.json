@@ -1,0 +1,22 @@
+{
+  "env": {
+    "node": true,
+    "es2022": true,
+    "browser": false
+  },
+  "parserOptions": {
+    "ecmaVersion": 2022,
+    "sourceType": "commonjs"
+  },
+  "rules": {
+    "no-unused-vars": ["warn", { "argsIgnorePattern": "^_" }],
+    "no-console": "off",
+    "eqeqeq": ["error", "always"],
+    "no-eval": "error",
+    "no-implied-eval": "error",
+    "strict": ["error", "global"],
+    "prefer-const": "error",
+    "no-var": "error"
+  },
+  "ignorePatterns": ["node_modules/", "public/js/*.js"]
+}

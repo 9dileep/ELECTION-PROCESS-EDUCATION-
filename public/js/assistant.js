@@ -34,19 +34,48 @@ async function sendChat() {
   const text = input.value.trim();
   if (!text) return;
   input.value = '';
-  appendMsg(text, 'user');
+  
+  // Sanitize user input before displaying
+  const sanitizedText = escapeHTML(text);
+  appendMsg(sanitizedText, 'user');
+  
   const typId = appendTyping();
   const useGemini = document.getElementById('gemini-toggle').checked;
   let reply;
-  if (useGemini) reply = await callGemini(text);
-  else reply = getLocalAnswer(text);
+  
+  if (useGemini) {
+    reply = await callGemini(text);
+  } else {
+    reply = getLocalAnswer(text);
+  }
+  
   const lang = document.getElementById('resp-lang').value;
-  if (lang) reply = await translateText(reply, lang);
+  if (lang) {
+    reply = await translateText(reply, lang);
+  }
+  
   removeEl(typId);
-  const formatted = reply.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\n/g, '<br/>');
+  
+  // Sanitize bot reply, then apply formatting safely
+  const sanitizedReply = escapeHTML(reply);
+  const formatted = sanitizedReply.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\n/g, '<br/>');
+  
   lastBotMsg = reply;
   appendMsg(formatted, 'bot');
   if (document.getElementById('tts-toggle').checked) speakText(reply);
+}
+
+function escapeHTML(str) {
+  if (!str) return '';
+  return str.replace(/[&<>'"]/g, 
+    tag => ({
+      '&': '&amp;',
+      '<': '&lt;',
+      '>': '&gt;',
+      "'": '&#39;',
+      '"': '&quot;'
+    }[tag] || tag)
+  );
 }
 
 // ===== GEMINI API (via secure server proxy) =====

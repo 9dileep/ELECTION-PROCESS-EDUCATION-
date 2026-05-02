@@ -11,6 +11,7 @@
 </head>
 
 <body>
+  <a href="#main-content" class="skip-link">Skip to main content</a>
   <div class="particles" id="particles"></div>
   <nav class="navbar" id="navbar">
     <div class="nav-inner">
@@ -29,7 +30,7 @@
     </div>
   </nav>
 
-<main>
+<main id="main-content">
   <div class="page-hero" style="padding-bottom:30px">
     <div class="page-tag">AI Powered by Google Gemini</div>
     <h1 class="page-title">Election <span class="gradient-text">AI Assistant</span></h1>
@@ -80,17 +81,23 @@
         </div>
 
         <!-- Chat Panel -->
-        <div class="chat-panel">
+        <div class="chat-panel" role="region" aria-label="AI Election Assistant Chat">
           <div class="chat-toolbar">
-            <span class="toolbar-label">🤖 ElectED Assistant</span>
-            <button class="tool-btn" id="mic-btn" onclick="toggleVoice()" title="Voice Input (Speech-to-Text)">🎤
-              Voice</button>
-            <button class="tool-btn" id="tts-btn" onclick="speakLast()" title="Read last message aloud">🔊 Read</button>
-            <button class="tool-btn" onclick="clearChat()" title="Clear conversation">🗑️ Clear</button>
+            <span class="toolbar-label" aria-hidden="true">🤖 ElectED Assistant</span>
+            <button class="tool-btn" id="mic-btn" onclick="toggleVoice()"
+              aria-label="Start voice input" title="Voice Input (Speech-to-Text)">🎤 Voice</button>
+            <button class="tool-btn" id="tts-btn" onclick="speakLast()"
+              aria-label="Read last response aloud" title="Read last message aloud">🔊 Read</button>
+            <button class="tool-btn" onclick="clearChat()"
+              aria-label="Clear conversation history" title="Clear conversation">🗑️ Clear</button>
           </div>
-          <div class="chat-msgs" id="chat-msgs">
+          <div class="chat-msgs" id="chat-msgs"
+               role="log"
+               aria-live="polite"
+               aria-label="Conversation history"
+               aria-relevant="additions">
             <div class="chat-msg">
-              <div class="msg-av">🤖</div>
+              <div class="msg-av" aria-hidden="true">🤖</div>
               <div class="msg-bub">
                 <strong>Hello! I'm your Election Education Assistant.</strong><br />
                 Ask me anything about voter registration, election timelines, the Electoral College, or any election
@@ -100,9 +107,14 @@
             </div>
           </div>
           <div class="chat-input-row">
-            <input id="chat-input" class="chat-input" placeholder="Ask about elections..." type="text" aria-label="Type your election question" />
-            <button class="send-btn" onclick="sendChat()" title="Send" aria-label="Send message">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <input id="chat-input" class="chat-input"
+              placeholder="Ask about elections..."
+              type="text"
+              aria-label="Type your election question"
+              maxlength="500"
+              autocomplete="off" />
+            <button class="send-btn" onclick="sendChat()" aria-label="Send message">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
                 <line x1="22" y1="2" x2="11" y2="13" />
                 <polygon points="22 2 15 22 11 13 2 9 22 2" />
               </svg>

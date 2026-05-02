@@ -1,20 +1,34 @@
-# Use the official Node.js 18 image as the base
+# ─────────────────────────────────────────────────────
+#  ElectED – Production Dockerfile
+#  Multi-stage principles: lean alpine base, non-root user
+# ─────────────────────────────────────────────────────
+
+# Use the official Node.js 18 LTS on Alpine for a minimal image
 FROM node:18-alpine
+
+# Set environment to production (disables devDependencies, enables optimizations)
+ENV NODE_ENV=production
+
+# Create a non-root user for security (never run containers as root)
+RUN addgroup -S appgroup && adduser -S appuser -G appgroup
 
 # Set the working directory inside the container
 WORKDIR /app
 
-# Copy package.json and package-lock.json (if available)
+# Copy dependency manifests first (Docker layer cache optimization)
 COPY package*.json ./
 
-# Install project dependencies
-RUN npm install
+# Install ONLY production dependencies with clean reproducible install
+RUN npm ci --omit=dev
 
-# Copy all the project files into the container
+# Copy the rest of the application source code
 COPY . .
 
-# Expose port 8080 (the port your server.js and Google Cloud Run use)
+# Switch to non-root user before running the application
+USER appuser
+
+# Expose the port Cloud Run / the app expects
 EXPOSE 8080
 
 # Start the Node.js server
-CMD ["npm", "start"]
+CMD ["node", "server.js"]

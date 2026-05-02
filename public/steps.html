@@ -33,12 +33,12 @@
 
 <section class="section">
   <div class="container">
-    <div class="filter-row">
-      <button class="tab-btn active" data-tab="voter">🙋 For Voters</button>
-      <button class="tab-btn" data-tab="candidate">🎙️ For Candidates</button>
-      <button class="tab-btn" data-tab="official">🏛️ For Officials</button>
+    <div class="filter-row" role="tablist" aria-label="Participation guide category">
+      <button class="tab-btn active" data-tab="voter" role="tab" aria-selected="true" aria-controls="steps-content">🙋 For Voters</button>
+      <button class="tab-btn" data-tab="candidate" role="tab" aria-selected="false" aria-controls="steps-content">🎙️ For Candidates</button>
+      <button class="tab-btn" data-tab="official" role="tab" aria-selected="false" aria-controls="steps-content">🏛️ For Officials</button>
     </div>
-    <div id="steps-content"></div>
+    <div id="steps-content" role="tabpanel" aria-live="polite"></div>
   </div>
 </section>
 
@@ -54,9 +54,13 @@
         </div>
       </div>
       <div class="maps-input-row">
-        <input id="maps-query" class="maps-input" placeholder="Enter your city, state or ZIP code..." type="text" aria-label="Search polling places"/>
-        <button class="btn btn-primary" onclick="searchPollingPlace()">🔍 Find Polling Places</button>
-        <button class="btn btn-secondary" onclick="useMyLocation()">📍 Use My Location</button>
+        <input id="maps-query" class="maps-input"
+          placeholder="Enter your city, state or ZIP code..."
+          type="text"
+          aria-label="Search for polling places by location"
+          autocomplete="street-address" />
+        <button class="btn btn-primary" onclick="searchPollingPlace()" aria-label="Find polling places near entered location">🔍 Find Polling Places</button>
+        <button class="btn btn-secondary" onclick="useMyLocation()" aria-label="Use my current GPS location to find polling places">📍 Use My Location</button>
       </div>
       <div id="maps-placeholder" style="display:flex;align-items:center;justify-content:center;height:200px;border:2px dashed var(--border);border-radius:16px;color:var(--text-muted);flex-direction:column;gap:10px;margin-top:16px">
         <span style="font-size:2.5rem">🗺️</span>
@@ -101,8 +105,12 @@ document.addEventListener('DOMContentLoaded', () => {
   renderSteps('voter');
   document.querySelectorAll('.tab-btn').forEach(btn => {
     btn.addEventListener('click', () => {
-      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.tab-btn').forEach(b => {
+        b.classList.remove('active');
+        b.setAttribute('aria-selected', 'false');
+      });
       btn.classList.add('active');
+      btn.setAttribute('aria-selected', 'true');
       renderSteps(btn.dataset.tab);
     });
   });
