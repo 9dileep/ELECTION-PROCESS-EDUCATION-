@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Election Timeline – ElectED</title>
+  <link rel="stylesheet" href="css/fonts.css" />
+  <link rel="stylesheet" href="css/shared.css" />
+</head>
+
+<body>
+  <div class="particles" id="particles"></div>
+  <nav class="navbar" id="navbar">
+    <div class="nav-inner">
+      <a class="nav-brand" href="index.html"><span class="brand-icon">🗳️</span><span
+          class="brand-name">ElectED</span></a>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="index.html" class="nav-link">Home</a></li>
+        <li><a href="timeline.html" class="nav-link">Timeline</a></li>
+        <li><a href="steps.html" class="nav-link">Steps</a></li>
+        <li><a href="quiz.html" class="nav-link">Quiz</a></li>
+        <li><a href="glossary.html" class="nav-link">Glossary</a></li>
+        <li><a href="assistant.html" class="nav-link">Ask AI</a></li>
+      </ul>
+      <div class="nav-auth" id="auth-area"></div>
+      <button class="hamburger" id="hamburger"><span></span><span></span><span></span></button>
+    </div>
+  </nav>
+
+  <div class="page-hero">
+    <div class="page-tag">Election Roadmap</div>
+    <h1 class="page-title">The Election <span class="gradient-text">Timeline</span></h1>
+    <p class="page-subtitle">Follow the complete journey from candidate announcement to inauguration. Click any phase
+      for details and add key dates to Google Calendar.</p>
+  </div>
+
+  <section class="section">
+    <div class="container">
+      <div class="filter-row">
+        <button class="filter-btn active" data-filter="all">All Phases</button>
+        <button class="filter-btn" data-filter="pre">Pre-Election</button>
+        <button class="filter-btn" data-filter="election">Election Day</button>
+        <button class="filter-btn" data-filter="post">Post-Election</button>
+      </div>
+      <div class="timeline" id="tl-container"></div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a class="nav-brand" href="index.html"><span class="brand-icon">🗳️</span><span
+            class="brand-name">ElectED</span></a>
+        <p>Empowering citizens with knowledge about the democratic process.</p>
+      </div>
+      <div class="footer-links">
+        <h4>Pages</h4>
+        <ul>
+          <li><a href="timeline.html">Timeline</a></li>
+          <li><a href="steps.html">Steps</a></li>
+          <li><a href="quiz.html">Quiz</a></li>
+          <li><a href="glossary.html">Glossary</a></li>
+          <li><a href="assistant.html">AI Assistant</a></li>
+        </ul>
+      </div>
+      <div class="footer-links">
+        <h4>Resources</h4>
+        <ul>
+          <li><a href="https://vote.gov" target="_blank">Vote.gov</a></li>
+          <li><a href="https://calendar.google.com" target="_blank">Google Calendar</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">© 2026 ElectED – For educational purposes only.</div>
+  </footer>
+
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+  <script src="js/config.js?v=3"></script>
+  <script src="js/data.js?v=3"></script>
+  <script src="js/shared.js?v=3"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const container = document.getElementById('tl-container');
+      container.innerHTML = TIMELINE_DATA.map(item => `
+    <div class="tl-item" data-filter="${item.filter}" id="tl-${item.id}">
+      <div class="tl-dot"></div>
+      <div class="tl-card" onclick="toggleTL(${item.id})">
+        <div class="tl-header">
+          <span class="tl-icon">${item.icon}</span>
+          <div class="tl-meta">
+            <div class="tl-phase">${item.phase}</div>
+            <div class="tl-title">${item.title}</div>
+          </div>
+          <span class="tl-time">${item.time}</span>
+        </div>
+        <div class="tl-desc">${item.desc}</div>
+        <div class="tl-expand">
+          <p style="margin-bottom:14px">${item.expand}</p>
+          ${item.calDate ? `<div class="tl-actions">
+            <button class="btn btn-sm btn-primary" onclick="event.stopPropagation();addToCalendar('${item.title}','${item.calDate}','${item.desc}')">📅 Add to Google Calendar</button>
+            <a href="assistant.html?q=${encodeURIComponent('Tell me more about ' + item.title)}" class="btn btn-sm btn-secondary">🤖 Ask AI</a>
+          </div>` : ''}
+        </div>
+      </div>
+    </div>`).join('');
+
+      document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          const f = btn.dataset.filter;
+          document.querySelectorAll('.tl-item').forEach(item => {
+            item.classList.toggle('hidden', f !== 'all' && item.dataset.filter !== f);
+          });
+        });
+      });
+      initScrollReveal('.tl-item');
+    });
+
+    function toggleTL(id) {
+      document.getElementById('tl-' + id).querySelector('.tl-card').classList.toggle('expanded');
+    }
+  </script>
+</body>
+
+</html>

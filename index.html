@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>ElectED – Election Process Education</title>
+  <meta name="description" content="Your interactive guide to understanding the election process, timelines, and steps to participate in democracy."/>
+  <link rel="stylesheet" href="css/fonts.css"/>
+  <link rel="stylesheet" href="css/shared.css"/>
+</head>
+<body>
+<div class="particles" id="particles"></div>
+
+<nav class="navbar" id="navbar">
+  <div class="nav-inner">
+    <a class="nav-brand" href="index.html"><span class="brand-icon">🗳️</span><span class="brand-name">ElectED</span></a>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html" class="nav-link">Home</a></li>
+      <li><a href="timeline.html" class="nav-link">Timeline</a></li>
+      <li><a href="steps.html" class="nav-link">Steps</a></li>
+      <li><a href="quiz.html" class="nav-link">Quiz</a></li>
+      <li><a href="glossary.html" class="nav-link">Glossary</a></li>
+      <li><a href="assistant.html" class="nav-link">Ask AI</a></li>
+    </ul>
+    <div class="nav-auth" id="auth-area">
+      <!-- Auth removed -->
+    </div>
+    <button class="hamburger" id="hamburger"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="home-hero">
+  <div class="hero-content">
+    <div class="hero-badge">🇺🇸 Your Democracy, Your Voice</div>
+    <h1 class="hero-title">Understand <span class="gradient-text">Elections</span><br/>Like Never Before</h1>
+    <p class="hero-sub">An interactive guide to the election process — from voter registration to inauguration. Learn timelines, steps, and get instant AI-powered answers.</p>
+    <div class="hero-btns">
+      <a href="timeline.html" class="btn btn-primary">📅 Explore Timeline</a>
+      <a href="assistant.html" class="btn btn-secondary">🤖 Ask AI Assistant</a>
+    </div>
+    <div class="hero-stats">
+      <div class="stat-card"><span class="stat-n">11</span><span class="stat-l">Election Phases</span></div>
+      <div class="stat-card"><span class="stat-n">22+</span><span class="stat-l">Key Terms</span></div>
+      <div class="stat-card"><span class="stat-n">10</span><span class="stat-l">Quiz Questions</span></div>
+      <div class="stat-card"><span class="stat-n">AI</span><span class="stat-l">Powered Chat</span></div>
+    </div>
+  </div>
+  <div style="flex:1;display:flex;justify-content:center;align-items:center">
+    <div class="globe-container">
+      <div class="globe">
+        <div class="globe-ring ring-1"></div>
+        <div class="globe-ring ring-2"></div>
+        <div class="globe-ring ring-3"></div>
+        <div class="globe-core">🗳️</div>
+      </div>
+      <div class="floating-badge badge-1">✓ Register to Vote</div>
+      <div class="floating-badge badge-2">📅 Know Your Date</div>
+      <div class="floating-badge badge-3">🏆 Your Vote Counts</div>
+    </div>
+  </div>
+</div>
+
+<!-- FEATURES -->
+<section class="section section-alt">
+  <div class="container">
+    <div style="text-align:center;margin-bottom:50px">
+      <div class="page-tag">Explore All Features</div>
+      <h2 class="page-title">Everything You Need to <span class="gradient-text">Participate</span></h2>
+      <p class="page-subtitle">Six powerful tools to make you an informed, engaged citizen</p>
+    </div>
+    <div class="feature-grid">
+      <a href="timeline.html" class="feature-card">
+        <div class="feature-icon">📅</div>
+        <div class="feature-title">Election Timeline</div>
+        <div class="feature-desc">Follow the complete journey from candidate announcements to inauguration — 11 interactive phases with Google Calendar integration.</div>
+        <div class="feature-arrow">Explore Timeline →</div>
+      </a>
+      <a href="steps.html" class="feature-card">
+        <div class="feature-icon">👣</div>
+        <div class="feature-title">How to Participate</div>
+        <div class="feature-desc">Step-by-step guides for voters, candidates, and election officials. Includes a free Google Maps polling place finder — no API key needed.</div>
+        <div class="feature-arrow">View Steps →</div>
+      </a>
+      <a href="quiz.html" class="feature-card">
+        <div class="feature-icon">🧠</div>
+        <div class="feature-title">Election Quiz</div>
+        <div class="feature-desc">Test your knowledge with 10 questions about the election process. Scores saved with your Google account.</div>
+        <div class="feature-arrow">Take the Quiz →</div>
+      </a>
+      <a href="glossary.html" class="feature-card">
+        <div class="feature-icon">📖</div>
+        <div class="feature-title">Glossary</div>
+        <div class="feature-desc">22 key election terms with definitions. Translate any term to your language using Google Translate.</div>
+        <div class="feature-arrow">Browse Glossary →</div>
+      </a>
+      <a href="assistant.html" class="feature-card">
+        <div class="feature-icon">🤖</div>
+        <div class="feature-title">AI Assistant</div>
+        <div class="feature-desc">Powered by Google Gemini. Ask any election question by typing or using your voice. Get instant, detailed answers.</div>
+        <div class="feature-arrow">Ask AI →</div>
+      </a>
+      <div class="feature-card" style="background:linear-gradient(135deg,rgba(99,102,241,0.15),rgba(139,92,246,0.15));cursor:default">
+        <div class="feature-icon">🌐</div>
+        <div class="feature-title">Google Integrations</div>
+        <div class="feature-desc">Powered by Gemini AI, Google Maps (free embed), Google Calendar, Web Speech API, and Google Translate — all 100% free.</div>
+        <div class="feature-arrow" style="color:var(--accent)">All Free ✔✔</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- GOOGLE SERVICES BANNER -->
+<section class="section">
+  <div class="container">
+    <div style="text-align:center;margin-bottom:40px">
+      <div class="page-tag">Powered By</div>
+      <h2 class="page-title"><span class="gradient-text">Google</span> Technologies</h2>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;gap:16px;justify-content:center">
+      <div class="card" style="padding:18px 24px;display:flex;align-items:center;gap:10px;min-width:180px">🤖 <div><div style="font-weight:700;font-size:.9rem">Gemini API</div><div style="color:var(--text-muted);font-size:.78rem">AI Assistant • Free key</div></div></div>
+      <div class="card" style="padding:18px 24px;display:flex;align-items:center;gap:10px;min-width:180px">🗺️ <div><div style="font-weight:700;font-size:.9rem">Google Maps</div><div style="color:var(--text-muted);font-size:.78rem">Polling Finder • Free embed</div></div></div>
+      <div class="card" style="padding:18px 24px;display:flex;align-items:center;gap:10px;min-width:180px">📅 <div><div style="font-weight:700;font-size:.9rem">Google Calendar</div><div style="color:var(--text-muted);font-size:.78rem">Election Reminders • Free</div></div></div>
+      <div class="card" style="padding:18px 24px;display:flex;align-items:center;gap:10px;min-width:180px">🌐 <div><div style="font-weight:700;font-size:.9rem">Google Translate</div><div style="color:var(--text-muted);font-size:.78rem">Multilingual • Free</div></div></div>
+      <div class="card" style="padding:18px 24px;display:flex;align-items:center;gap:10px;min-width:180px">🎤 <div><div style="font-weight:700;font-size:.9rem">Web Speech API</div><div style="color:var(--text-muted);font-size:.78rem">Voice Input/TTS • Free</div></div></div>
+      <div class="card" style="padding:18px 24px;display:flex;align-items:center;gap:10px;min-width:180px">💾 <div><div style="font-weight:700;font-size:.9rem">LocalStorage</div><div style="color:var(--text-muted);font-size:.78rem">Quiz History • Free</div></div></div>
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <a class="nav-brand" href="index.html"><span class="brand-icon">🗳️</span><span class="brand-name">ElectED</span></a>
+      <p>Empowering citizens with knowledge about the democratic process. Powered by Google technologies.</p>
+    </div>
+    <div class="footer-links">
+      <h4>Pages</h4>
+      <ul>
+        <li><a href="timeline.html">Election Timeline</a></li>
+        <li><a href="steps.html">How to Participate</a></li>
+        <li><a href="quiz.html">Election Quiz</a></li>
+        <li><a href="glossary.html">Glossary</a></li>
+        <li><a href="assistant.html">AI Assistant</a></li>
+      </ul>
+    </div>
+    <div class="footer-links">
+      <h4>Resources</h4>
+      <ul>
+        <li><a href="https://vote.gov" target="_blank">Vote.gov</a></li>
+        <li><a href="https://www.usa.gov/absentee-voting" target="_blank">Absentee Voting</a></li>
+        <li><a href="https://www.usa.gov/voter-registration" target="_blank">Voter Registration</a></li>
+        <li><a href="https://aistudio.google.com" target="_blank">Get Gemini API Key</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">© 2026 ElectED – For educational purposes only.</div>
+</footer>
+
+
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+<script src="js/config.js?v=3"></script>
+<script src="js/data.js?v=3"></script>
+<script src="js/shared.js?v=3"></script>
+</body>
+</html>

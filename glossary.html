@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Election Glossary – ElectED</title>
+  <link rel="stylesheet" href="css/fonts.css"/><link rel="stylesheet" href="css/shared.css"/>
+</head>
+<body>
+<div class="particles" id="particles"></div>
+<nav class="navbar" id="navbar">
+  <div class="nav-inner">
+    <a class="nav-brand" href="index.html"><span class="brand-icon">🗳️</span><span class="brand-name">ElectED</span></a>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html" class="nav-link">Home</a></li>
+      <li><a href="timeline.html" class="nav-link">Timeline</a></li>
+      <li><a href="steps.html" class="nav-link">Steps</a></li>
+      <li><a href="quiz.html" class="nav-link">Quiz</a></li>
+      <li><a href="glossary.html" class="nav-link">Glossary</a></li>
+      <li><a href="assistant.html" class="nav-link">Ask AI</a></li>
+    </ul>
+    <div class="nav-auth" id="auth-area"></div>
+    <button class="hamburger" id="hamburger"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+
+<div class="page-hero">
+  <div class="page-tag">Key Terminology</div>
+  <h1 class="page-title">Election <span class="gradient-text">Glossary</span></h1>
+  <p class="page-subtitle">22 essential election terms. Search, filter by category, and translate any term using Google Translate.</p>
+</div>
+
+<section class="section">
+  <div class="container">
+    <!-- Search + Language -->
+    <div style="display:flex;gap:14px;justify-content:center;align-items:center;flex-wrap:wrap;margin-bottom:24px">
+      <input id="g-search" class="glossary-search" placeholder="🔍 Search terms..." oninput="renderGlossary()"/>
+      <select id="g-lang" class="lang-select" onchange="renderGlossary()" title="Translate to language">
+        <option value="">🌐 Translate to...</option>
+        <option value="es">🇪🇸 Spanish</option>
+        <option value="fr">🇫🇷 French</option>
+        <option value="de">🇩🇪 German</option>
+        <option value="hi">🇮🇳 Hindi</option>
+        <option value="zh">🇨🇳 Chinese</option>
+        <option value="ar">🇸🇦 Arabic</option>
+        <option value="pt">🇧🇷 Portuguese</option>
+        <option value="ja">🇯🇵 Japanese</option>
+        <option value="ko">🇰🇷 Korean</option>
+        <option value="ru">🇷🇺 Russian</option>
+      </select>
+    </div>
+    <!-- Category filters -->
+    <div class="filter-row" style="margin-bottom:36px">
+      <button class="filter-btn active" data-cat="all">All</button>
+      <button class="filter-btn" data-cat="voting">🗳️ Voting</button>
+      <button class="filter-btn" data-cat="process">⚙️ Process</button>
+      <button class="filter-btn" data-cat="system">🏛️ System</button>
+      <button class="filter-btn" data-cat="candidates">🎙️ Candidates</button>
+    </div>
+    <div class="glossary-grid" id="g-grid"></div>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <a class="nav-brand" href="index.html"><span class="brand-icon">🗳️</span><span class="brand-name">ElectED</span></a>
+      <p>Empowering citizens with knowledge about the democratic process.</p>
+    </div>
+    <div class="footer-links"><h4>Pages</h4><ul>
+      <li><a href="timeline.html">Timeline</a></li><li><a href="steps.html">Steps</a></li>
+      <li><a href="quiz.html">Quiz</a></li><li><a href="assistant.html">AI Assistant</a></li>
+    </ul></div>
+    <div class="footer-links"><h4>Resources</h4><ul>
+      <li><a href="https://translate.google.com" target="_blank">Google Translate</a></li>
+      <li><a href="https://vote.gov" target="_blank">Vote.gov</a></li>
+    </ul></div>
+  </div>
+  <div class="footer-bottom">© 2026 ElectED – For educational purposes only.</div>
+</footer>
+
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+<script src="js/config.js?v=3"></script>
+<script src="js/data.js?v=3"></script>
+<script src="js/shared.js?v=3"></script>
+<script>
+let activeCat = 'all';
+document.addEventListener('DOMContentLoaded', () => {
+  renderGlossary();
+  document.querySelectorAll('[data-cat]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('[data-cat]').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      activeCat = btn.dataset.cat;
+      renderGlossary();
+    });
+  });
+});
+
+function renderGlossary() {
+  const q = document.getElementById('g-search').value.toLowerCase();
+  const lang = document.getElementById('g-lang').value;
+  const filtered = GLOSSARY_DATA.filter(g =>
+    (activeCat === 'all' || g.category === activeCat) &&
+    (g.term.toLowerCase().includes(q) || g.def.toLowerCase().includes(q))
+  );
+  const grid = document.getElementById('g-grid');
+  if (!filtered.length) {
+    grid.innerHTML = '<p style="color:var(--text-muted);grid-column:1/-1;text-align:center;padding:40px">No terms found.</p>';
+    return;
+  }
+  grid.innerHTML = filtered.map((g, i) => `
+    <div class="glossary-card">
+      <div class="glossary-term">
+        <span>${g.term}</span>
+        ${lang ? `<button class="translate-btn" onclick="translateTerm(${i},'${lang}')">🌐 ${lang.toUpperCase()}</button>` : ''}
+      </div>
+      <div class="glossary-def" id="def-${i}">${g.def}</div>
+      <div class="translated-text" id="tr-${i}"></div>
+      <div style="margin-top:10px">
+        <a href="assistant.html?q=${encodeURIComponent('Explain ' + g.term + ' in simple terms')}" 
+           style="color:#a5b4fc;font-size:.78rem;text-decoration:none">🤖 Ask AI about this →</a>
+      </div>
+    </div>`).join('');
+  window._filteredGlossary = filtered;
+}
+
+async function translateTerm(idx, targetLang) {
+  const g = window._filteredGlossary[idx];
+  const trEl = document.getElementById(`tr-${idx}`);
+  trEl.style.display = 'block';
+  trEl.textContent = '⏳ Translating...';
+  try {
+    // Uses Google Translate free endpoint (for demo; production needs Translate API key)
+    const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=${targetLang}&dt=t&q=${encodeURIComponent(g.def)}`;
+    const res = await fetch(url);
+    const data = await res.json();
+    const translated = data[0].map(x => x[0]).join('');
+    trEl.textContent = `🌐 ${translated}`;
+    showToast(`Translated to ${targetLang.toUpperCase()}`, 'success');
+  } catch {
+    // Fallback: open Google Translate
+    const link = `https://translate.google.com/?sl=en&tl=${targetLang}&text=${encodeURIComponent(g.def)}&op=translate`;
+    trEl.innerHTML = `<a href="${link}" target="_blank" style="color:#a5b4fc">Open in Google Translate ↗</a>`;
+  }
+}
+</script>
+</body>
+</html>

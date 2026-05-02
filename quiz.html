@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Election Quiz – ElectED</title>
+  <link rel="stylesheet" href="css/fonts.css"/><link rel="stylesheet" href="css/shared.css"/>
+</head>
+<body>
+<div class="particles" id="particles"></div>
+<nav class="navbar" id="navbar">
+  <div class="nav-inner">
+    <a class="nav-brand" href="index.html"><span class="brand-icon">🗳️</span><span class="brand-name">ElectED</span></a>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html" class="nav-link">Home</a></li>
+      <li><a href="timeline.html" class="nav-link">Timeline</a></li>
+      <li><a href="steps.html" class="nav-link">Steps</a></li>
+      <li><a href="quiz.html" class="nav-link">Quiz</a></li>
+      <li><a href="glossary.html" class="nav-link">Glossary</a></li>
+      <li><a href="assistant.html" class="nav-link">Ask AI</a></li>
+    </ul>
+    <div class="nav-auth" id="auth-area"></div>
+    <button class="hamburger" id="hamburger"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+
+<div class="page-hero">
+  <div class="page-tag">Test Your Knowledge</div>
+  <h1 class="page-title">Election <span class="gradient-text">Quiz</span></h1>
+  <p class="page-subtitle">10 questions to test your election knowledge. Your scores are saved locally in your browser — no account needed!</p>
+</div>
+
+<section class="section">
+  <div class="container">
+    <div class="quiz-wrap" id="quiz-wrap"></div>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <a class="nav-brand" href="index.html"><span class="brand-icon">🗳️</span><span class="brand-name">ElectED</span></a>
+      <p>Empowering citizens with knowledge about the democratic process.</p>
+    </div>
+    <div class="footer-links"><h4>Pages</h4><ul>
+      <li><a href="timeline.html">Timeline</a></li><li><a href="steps.html">Steps</a></li>
+      <li><a href="glossary.html">Glossary</a></li><li><a href="assistant.html">AI Assistant</a></li>
+    </ul></div>
+    <div class="footer-links"><h4>Resources</h4><ul>
+      <li><a href="https://vote.gov" target="_blank">Vote.gov</a></li>
+    </ul></div>
+  </div>
+  <div class="footer-bottom">© 2026 ElectED – For educational purposes only.</div>
+</footer>
+
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+<script src="js/config.js?v=3"></script>
+<script src="js/data.js?v=3"></script>
+<script src="js/shared.js?v=3"></script>
+<script>
+let qi = 0, qs = 0, answered = false;
+
+document.addEventListener('DOMContentLoaded', () => renderQ());
+
+function renderQ() {
+  const q = QUIZ_DATA[qi];
+  const pct = (qi / QUIZ_DATA.length) * 100;
+  document.getElementById('quiz-wrap').innerHTML = `
+    <div class="quiz-progress-row">
+      <span class="quiz-progress-text">Question ${qi+1} of ${QUIZ_DATA.length}</span>
+      <div class="quiz-bar"><div class="quiz-fill" style="width:${pct}%"></div></div>
+      <span class="quiz-progress-text">Score: ${qs}</span>
+    </div>
+    <div class="quiz-card">
+      <div class="quiz-q">❓ ${q.q}</div>
+      <div class="quiz-options">
+        ${q.options.map((o,i) => `<button class="quiz-opt" id="qo-${i}" onclick="answer(${i})">
+          <span class="opt-letter">${['A','B','C','D'][i]}</span>${o}
+        </button>`).join('')}
+      </div>
+      <div id="quiz-fb"></div>
+      <div class="quiz-next" id="quiz-next"><button class="btn btn-primary" onclick="nextQ()">Next Question →</button></div>
+    </div>`;
+  answered = false;
+}
+
+function answer(sel) {
+  if (answered) return;
+  answered = true;
+  const q = QUIZ_DATA[qi];
+  const correct = sel === q.answer;
+  if (correct) qs++;
+  document.querySelectorAll('.quiz-opt').forEach((b, i) => {
+    b.disabled = true;
+    if (i === q.answer) b.classList.add('correct');
+    else if (i === sel && !correct) b.classList.add('wrong');
+  });
+  document.getElementById('quiz-fb').innerHTML = `<div class="quiz-fb ${correct ? 'correct' : 'wrong'}">${correct ? '✅ Correct!' : '❌ Incorrect.'} ${q.explanation}</div>`;
+  document.getElementById('quiz-next').style.display = 'block';
+}
+
+function nextQ() {
+  qi++;
+  if (qi >= QUIZ_DATA.length) showResult();
+  else renderQ();
+}
+
+function showResult() {
+  const pct = Math.round(qs / QUIZ_DATA.length * 100);
+  const msg = pct >= 80 ? '🎉 Election Expert!' : pct >= 60 ? '👍 Good job! Keep learning.' : '📚 Keep studying — democracy needs informed voters!';
+
+  // ===== LOCALSTORAGE: Save score =====
+  const history = JSON.parse(localStorage.getItem('electED_scores') || '[]');
+  history.push({ score: qs, total: QUIZ_DATA.length, pct, date: new Date().toLocaleString() });
+  if (history.length > 10) history.shift(); // keep last 10
+  localStorage.setItem('electED_scores', JSON.stringify(history));
+  const best = Math.max(...history.map(h => h.pct));
+  const attempts = history.length;
+
+  // ===== BUILD HISTORY HTML =====
+  const historyHtml = history.length > 1 ? `
+    <div style="margin:20px 0;padding:16px;background:rgba(99,102,241,.08);border-radius:12px;text-align:left">
+      <div style="font-weight:700;font-size:.88rem;color:var(--text-muted);margin-bottom:10px">📊 Score History (last ${history.length} attempt${history.length>1?'s':''})</div>
+      ${history.slice().reverse().map((h,i) => `
+        <div style="display:flex;justify-content:space-between;font-size:.82rem;padding:4px 0;border-bottom:1px solid var(--border);color:${i===0?'var(--primary)':'var(--text-muted)'}">
+          <span>${h.date}</span><span>${h.score}/${h.total} — ${h.pct}%</span>
+        </div>`).join('')}
+      <div style="margin-top:8px;font-size:.82rem;color:var(--accent)">🏆 Best: ${best}% &nbsp;·&nbsp; 🔄 Attempts: ${attempts}</div>
+    </div>` : '';
+
+  document.getElementById('quiz-wrap').innerHTML = `
+    <div class="quiz-card" style="text-align:center;padding:50px 36px">
+      <div class="result-score">${qs}/${QUIZ_DATA.length}</div>
+      <div class="result-msg">${msg}</div>
+      <p style="color:var(--text-muted);margin-bottom:10px">You answered ${pct}% correctly.</p>
+      <p style="color:var(--accent);font-size:.85rem;margin-bottom:20px">🏆 Your best: ${best}% &nbsp;·&nbsp; Attempt #${attempts}</p>
+      ${historyHtml}
+      <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:8px">
+        <button class="btn btn-primary" onclick="resetQuiz()">🔄 Try Again</button>
+        <button class="btn btn-secondary" onclick="shareResult(${qs}, ${QUIZ_DATA.length}, ${pct})">📤 Share Result</button>
+        <a href="glossary.html" class="btn btn-secondary">📖 Review Glossary</a>
+        <a href="assistant.html" class="btn btn-secondary">🤖 Ask AI</a>
+      </div>
+    </div>`;
+
+  // Firebase save (optional, if configured)
+  if (typeof currentUser !== 'undefined' && currentUser && typeof db !== 'undefined' && db) {
+    db.collection('quiz_scores').add({
+      uid: currentUser.uid, name: currentUser.displayName,
+      score: qs, total: QUIZ_DATA.length, pct, date: new Date().toISOString()
+    }).then(() => showToast('Score also saved to your Google account! 🎉', 'success'))
+      .catch(() => {});
+  }
+}
+
+// ===== WEB SHARE API =====
+function shareResult(score, total, pct) {
+  const text = `🗺️ ElectED Election Quiz\n\nI scored ${score}/${total} (${pct}%) on the Election Knowledge Quiz!\n\nTest your own knowledge: ${location.href.replace('quiz.html','')}quiz.html`;
+  if (navigator.share) {
+    navigator.share({ title: 'ElectED Quiz Result', text, url: window.location.href })
+      .then(() => showToast('📤 Shared successfully!', 'success'))
+      .catch(() => copyToClipboard(text));
+  } else {
+    copyToClipboard(text);
+  }
+}
+
+function copyToClipboard(text) {
+  navigator.clipboard.writeText(text)
+    .then(() => showToast('📋 Result copied to clipboard!', 'success'))
+    .catch(() => showToast('Could not share — try copying manually', 'error'));
+}
+
+function resetQuiz() { qi = 0; qs = 0; renderQ(); }
+</script>
+</body>
+</html>

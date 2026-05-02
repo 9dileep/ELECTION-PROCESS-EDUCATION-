@@ -1,0 +1,22 @@
+# Dependency directories
+node_modules/
+npm-debug.log*
+
+# Environment variables (SECURITY: DO NOT REMOVE)
+.env
+.env.local
+.env.development
+.env.production
+
+# Backups and temporary files
+*.1.js
+*.bak
+*.tmp
+
+# OS Metadata
+.DS_Store
+Thumbs.db
+
+# IDE Folders
+.vscode/
+.idea/
